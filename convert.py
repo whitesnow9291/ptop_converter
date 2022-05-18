@@ -6,7 +6,7 @@ import tinify
 import json
 tinypng_api_key = 'cr8J4CzvN0W1QcyRXHVb6vxLjMb49fTl'
 directory = r"../chords"
-destionation = r'./extracted'
+destionation = r'./output'
 
 tinify.key = tinypng_api_key
 
@@ -23,12 +23,17 @@ def convertDirectory(dir_path):
         docx2txt.process(docPath, destPath)
 
         images = listdir(destPath)
+        require_images = []
+        for img in images:
+            img = f'require("../assets/chords/{file_id}/{img}")'
+            require_images.append(img)
         chord = {
             'id': file_id,
             'label': chordname,
-            'images': images
+            'images': require_images
         }
         chord_data.append(chord)
         file_id = file_id + 1
-    print(json.dumps(chord_data))
+    with open('chords.json', 'w') as outfile:
+        json.dump(chord_data, outfile)
 convertDirectory(directory)
